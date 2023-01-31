@@ -2,8 +2,6 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 
-val exposed_version = "0.40.1"
-
 plugins {
     kotlin("jvm") version "1.8.0"
     id("io.ktor.plugin") version "2.2.2"
@@ -24,12 +22,12 @@ repositories {
 }
 
 dependencies {
-    implementation("org.postgresql", "postgresql", "42.5.1")
-    implementation("org.flywaydb", "flyway-core", "9.10.2")
+    implementation("org.postgresql:postgresql:42.5.1")
+    implementation("org.flywaydb:flyway-core:9.10.2")
 
-    implementation("org.jetbrains.exposed", "exposed-core", exposed_version)
-    implementation("org.jetbrains.exposed", "exposed-dao", exposed_version)
-    implementation("org.jetbrains.exposed", "exposed-jdbc", exposed_version)
+    implementation("org.jetbrains.exposed:exposed-core:0.40.1")
+    implementation("org.jetbrains.exposed:exposed-dao:0.40.1")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.40.1")
 
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
 
