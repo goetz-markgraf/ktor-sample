@@ -19,8 +19,7 @@ fun Route.authenticationRoutes() =
     route("/public") {
         post("/login") {
             try {
-                val data =
-                    call.receive<LoginDTO>()
+                val data = call.receive<LoginDTO>()
                 if (data.username.isNotEmpty() && data.username == data.password) {
                     call.sessions.set(SessionData(data.username))
                     call.respond(true)

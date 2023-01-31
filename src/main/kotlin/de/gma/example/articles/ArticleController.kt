@@ -1,5 +1,6 @@
 package de.gma.example.articles
 
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -16,18 +17,21 @@ data class ArticleDto(
 
 fun Route.articleController() {
     authenticate {
-        val articles by inject<ArticleRepository>()
+        val articlesRepository by inject<ArticleRepository>()
 
         route("/api/articles") {
             get {
-                val allArticles = articles.allArticles()
+                val allArticles = articlesRepository.allArticles()
                 call.respond(allArticles)
             }
 
             post {
-                val newArticle = call.receive<ArticleDto>()
-                articles.newArticle(newArticle.name, newArticle.content)
-                call.respond(articles.allArticles())
+                val articleDto = call.receive<ArticleDto>()
+                val newArticle = articlesRepository.newArticle(articleDto.name, articleDto.content)
+                if (newArticle != null)
+                    call.respond(newArticle)
+                else
+                    call.respond(HttpStatusCode.InternalServerError, "Error saving new article")
             }
         }
     }

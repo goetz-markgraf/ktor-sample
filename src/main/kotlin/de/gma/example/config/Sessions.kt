@@ -1,6 +1,6 @@
 package de.gma.example.config
 
-import de.gma.example.config.SessionDataItems.expires
+import de.gma.example.config.SessionDataTable.expires
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.sessions.*
@@ -20,7 +20,11 @@ fun Application.configureSessions() {
 
 data class SessionData(val uid: String = "") : Principal
 
-object SessionDataItems : Table("session") {
+
+// ====== Persistent Session
+
+
+object SessionDataTable : Table("session") {
     val id = varchar("id", 200)
     val value = varchar("value", 1000)
     val expires = long("expires")
@@ -34,41 +38,39 @@ class SessionStorageDatabase : SessionStorage {
     override suspend fun invalidate(id: String) {
         dbQuery {
             clearExpiredSessions()
-            SessionDataItems.deleteWhere { SessionDataItems.id eq id }
+            SessionDataTable.deleteWhere { SessionDataTable.id eq id }
         }
     }
 
     override suspend fun read(id: String): String = dbQuery {
         clearExpiredSessions()
         val time = Date().time
-        val query = SessionDataItems.select {
-            (SessionDataItems.id eq id) and (expires greater time)
-        }.map { it[SessionDataItems.value] }
-        if (query.isEmpty() || query.size > 1)
-            throw NoSuchElementException("Session $id not found")
-        else
-            query.first()
+        val uid = SessionDataTable.select {
+            (SessionDataTable.id eq id) and (expires greater time)
+        }.map { it[SessionDataTable.value] }
+            .singleOrNull()
+
+        uid ?: throw NoSuchElementException("Session $id not found")
     }
 
     override suspend fun write(id: String, value: String) {
         val newExpires = Date().time + SESSION_TIMEOUT
         dbQuery {
             clearExpiredSessions()
-            if (SessionDataItems.update({ SessionDataItems.id eq id }) {
+            if (SessionDataTable.update({ SessionDataTable.id eq id }) {
                     it[expires] = newExpires
                 } == 0
             )
-                SessionDataItems.insert {
-                    it[SessionDataItems.id] = id
-                    it[SessionDataItems.value] = value
+                SessionDataTable.insert {
+                    it[SessionDataTable.id] = id
+                    it[SessionDataTable.value] = value
                     it[expires] = newExpires
                 }
-
         }
     }
 
     private fun clearExpiredSessions() {
         val time = Date().time
-        SessionDataItems.deleteWhere { expires less time }
+        SessionDataTable.deleteWhere { expires less time }
     }
 }

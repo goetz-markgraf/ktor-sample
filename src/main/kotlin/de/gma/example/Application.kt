@@ -13,11 +13,11 @@ fun main(args: Array<String>): Unit =
 fun Application.module() {
     initDatabase()
 
-    dependencies()
+    initDependencies()
 
     configureSessions()
     configureSecurity()
-    configureSerialization()
 
+    configureSerialization()
     configureRouting()
 }

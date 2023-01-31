@@ -9,8 +9,6 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 
 fun Application.initDatabase() {
 
-    // TODO introduce Connection Pool (Hikari)
-
     val host = environment.config.property("database.host").getString()
     val port = environment.config.property("database.port").getString()
     val flavour = environment.config.property("database.flavour").getString()
@@ -19,22 +17,22 @@ fun Application.initDatabase() {
     val password = environment.config.property("database.password").getString()
 
     val dbUrl = "jdbc:$flavour://$host:$port/$databaseName"
-    val dbUser = username
-    val dbPassword = password
+
+    // TODO introduce Connection Pool (Hikari)
 
     Database.connect(
         url = dbUrl,
-        user = dbUser,
-        password = dbPassword
+        user = username,
+        password = password
     )
 
-    val flyway = Flyway.configure()
+    Flyway.configure()
         .createSchemas(true)
         .schemas("public")
-        .dataSource(dbUrl, dbUser, dbPassword)
+        .dataSource(dbUrl, username, password)
         .load()
+        .migrate()
 
-    flyway.migrate()
 }
 
 suspend fun <T> dbQuery(block: suspend () -> T): T =
