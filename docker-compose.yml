@@ -1,0 +1,17 @@
+version: '3.5'
+
+services:
+  postgres-ktor:
+    container_name: postgres-ktor
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5434:5432"
+    networks:
+      - local-network
+
+networks:
+  local-network:
+    driver: bridge
