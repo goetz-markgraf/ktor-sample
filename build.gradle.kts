@@ -42,6 +42,9 @@ dependencies {
     implementation("io.ktor:ktor-server-sessions-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
 
+    implementation("io.insert-koin:koin-ktor:3.3.0")
+    implementation("io.insert-koin:koin-logger-slf4j:3.3.0")
+
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

@@ -6,6 +6,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
+import org.koin.ktor.ext.inject
 
 @Serializable
 data class ArticleDto(
@@ -13,18 +14,20 @@ data class ArticleDto(
     val content: String
 )
 
-fun Route.articleController(db: ArticleRepository) {
+fun Route.articleController() {
     authenticate {
+        val articles by inject<ArticleRepository>()
+
         route("/api/articles") {
             get {
-                val articles = db.allArticles()
-                call.respond(articles)
+                val allArticles = articles.allArticles()
+                call.respond(allArticles)
             }
 
             post {
                 val newArticle = call.receive<ArticleDto>()
-                db.newArticle(newArticle.name, newArticle.content)
-                call.respond(db.allArticles())
+                articles.newArticle(newArticle.name, newArticle.content)
+                call.respond(articles.allArticles())
             }
         }
     }

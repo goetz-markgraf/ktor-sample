@@ -1,6 +1,5 @@
 package de.gma.example.config
 
-import de.gma.example.articles.ArticleRepositoryImpl
 import de.gma.example.articles.articleController
 import de.gma.example.auth.authenticationRoutes
 import de.gma.example.auth.replayRoutes
@@ -12,6 +11,6 @@ fun Application.configureRouting() {
         authenticationRoutes()
         replayRoutes()
 
-        articleController(ArticleRepositoryImpl())
+        articleController()
     }
 }

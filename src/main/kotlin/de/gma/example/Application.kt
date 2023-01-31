@@ -13,6 +13,8 @@ fun main(args: Array<String>): Unit =
 fun Application.module() {
     initDatabase()
 
+    dependencies()
+
     configureSessions()
     configureSecurity()
     configureSerialization()

@@ -5,6 +5,7 @@ import de.gma.example.config.dbQuery
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.koin.dsl.module
 
 @Serializable
 data class Article(
@@ -30,6 +31,11 @@ interface ArticleRepository {
     suspend fun publishArticle(id: Long): Boolean
     suspend fun deleteArticle(id: Long): Boolean
 }
+
+val articleModule = module {
+    single<ArticleRepository> { ArticleRepositoryImpl() }
+}
+
 
 class ArticleRepositoryImpl : ArticleRepository {
     override suspend fun allArticles(): List<Article> = dbQuery {
