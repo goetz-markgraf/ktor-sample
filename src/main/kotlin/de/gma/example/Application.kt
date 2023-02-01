@@ -20,4 +20,6 @@ fun Application.module() {
 
     configureSerialization()
     configureRouting()
+
+    configureMetrics()
 }
