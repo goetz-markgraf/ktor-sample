@@ -15,6 +15,8 @@ data class LoginDTO(
     val password: String
 )
 
+
+
 fun Route.authenticationRoutes() =
     route("/public") {
         post("/login") {

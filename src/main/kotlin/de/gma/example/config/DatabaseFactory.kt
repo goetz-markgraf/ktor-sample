@@ -32,8 +32,9 @@ fun Application.initDatabase() {
         .dataSource(dbUrl, username, password)
         .load()
         .migrate()
-
 }
+
+
 
 suspend fun <T> dbQuery(block: suspend () -> T): T =
     newSuspendedTransaction(Dispatchers.IO) { block() }
